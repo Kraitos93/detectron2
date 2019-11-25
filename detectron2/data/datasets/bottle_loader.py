@@ -10,8 +10,8 @@ def get_data_dict(dataset_dir):
     images_list = os.listdir(images)
     random.shuffle(images_list)
 
-    train = images_list[0,len(images_list)*0.80]
-    test = images_list[len(images_list)*0.80, len(images_list)]
+    train = images_list[0:int(len(images_list)*0.80)]
+    test = images_list[int(len(images_list)*0.80):int(len(images_list))]
 
     dataset_dicts_train = []
     dataset_dicts_val = []
@@ -35,7 +35,7 @@ def get_data_record(annotation_folder, dataset_dir, img):
     record = {}
     #Get the annotation file for the image
     image_name = os.path.splitext(img)[0]
-    with open(os.path.join(dataset_dir, 'annotations', annotation_folder, image_name + '_annotations.json')) as f:
+    with open(os.path.join(dataset_dir, 'annotations', annotation_folder, image_name + '_annotation.json')) as f:
         img_annotation = json.load(f)
     
     filename = os.path.join(dataset_dir, 'images', img)
@@ -53,15 +53,15 @@ def get_data_record(annotation_folder, dataset_dir, img):
         y_bottom = bbox['y_bottom']
         category_id = category_switch(category_name)
         obj = {
-            'bbox': [x_top, y_top, x_bootom, y_bottom],
+            'bbox': [int(x_top), int(y_top), int(x_bootom), int(y_bottom)],
             'bbox_mode': BoxMode.XYXY_ABS,
             'category_id': category_id
         }
         objs.append(obj)
     record['file_name'] = filename
     record['image_id'] = idx
-    record['height'] = height
-    record['width'] = width
+    record['height'] = int(height)
+    record['width'] = int(width)
     record['annotations'] = objs
     return record
 
@@ -72,7 +72,7 @@ def category_switch(category):
         return 1
     elif category == 'pepsi_cherry':
         return 2
-    elif category == 'pepsi_zerot':
+    elif category == 'pepsi_zerow':
          #TODO: This category is not correct, I think it is zerot or something like that
         return 3
     else:
@@ -80,13 +80,11 @@ def category_switch(category):
 
 
 from detectron2.data import DatasetCatalog, MetadataCatalog
-bottle_train, bottle_test = get_data_dict('soda_bottle')
-DatasetCatalog.register('bottle_train', bottle_train)
-MetadataCatalog.get('ballon_train').set(thing_classes=['pepsi', 'mtn_dew', 'pepsi_cherry', 'pepsi_zerot'])
+bottle_train, bottle_test = get_data_dict('Soda_bottle_dataset')
+DatasetCatalog.register('bottle_train', lambda: bottle_train)
+MetadataCatalog.get('bottle_train').set(thing_classes=['pepsi', 'mtn_dew', 'pepsi_cherry', 'pepsi_zerow'])
 
-DatasetCatalog.register('bottle_test', bottle_test)
-MetadataCatalog.get('ballon_test').set(thing_classes=['pepsi', 'mtn_dew', 'pepsi_cherry', 'pepsi_zerot'])
+DatasetCatalog.register('bottle_test', lambda: bottle_test)
+MetadataCatalog.get('bottle_test').set(thing_classes=['pepsi', 'mtn_dew', 'pepsi_cherry', 'pepsi_zerow'])
 
 bottle_metadata = MetadataCatalog.get("bottle_train")
-
-
