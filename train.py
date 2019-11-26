@@ -53,13 +53,14 @@ def train_model(path, model, weights, dataset):
     trainer.train()
 
 def test_model(path, model, weights, dataset):
+    dataset_name = os.path.basename(path)
     bottle_loader.register_dataset(path, dataset)
     cfg_test = gen_cfg_test(dataset)
     cfg = gen_cfg_train(model, weights, dataset)
     cfg.MODEL.WEIGHTS = os.path.join(cfg.OUTPUT_DIR, "model_final.pth")
     trainer = DefaultTrainer(cfg)
     trainer.resume_or_load(resume=False)
-    evaluator = COCOEvaluator("%s_test" % (dataset), cfg_test, False, output_dir="./output_%s/" % (dataset))
+    evaluator = COCOEvaluator("%s_test" % (dataset_name), cfg_test, False, output_dir="./output_%s/" % (dataset))
     val_loader = build_detection_test_loader(cfg_test, "%s_test" % (dataset))
     inference_on_dataset(trainer.model, val_loader, evaluator)
 
