@@ -55,6 +55,7 @@ def train_model(path, model, weights, dataset):
 def test_model(path, model, weights, dataset):
     dataset_name = os.path.basename(path)
     bottle_loader.register_dataset(path, dataset_name)
+    bottle_loader.register_dataset(path, dataset)
     cfg_test = gen_cfg_test(dataset)
     cfg = gen_cfg_train(model, weights, dataset)
     cfg.MODEL.WEIGHTS = os.path.join(cfg.OUTPUT_DIR, "model_final.pth")
