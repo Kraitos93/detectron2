@@ -4,6 +4,8 @@ import json
 from detectron2.structures import BoxMode
 import itertools
 import random
+from detectron2.data import DatasetCatalog, MetadataCatalog
+import sys
 
 def get_data_dict(dataset_dir):
     images = os.path.join(dataset_dir, 'images')
@@ -79,12 +81,14 @@ def category_switch(category):
         raise Exception('Unknown category in the dataset')
 
 
-from detectron2.data import DatasetCatalog, MetadataCatalog
-bottle_train, bottle_test = get_data_dict('Soda_bottle_dataset')
-DatasetCatalog.register('bottle_train', lambda: bottle_train)
-MetadataCatalog.get('bottle_train').set(thing_classes=['pepsi', 'mtn_dew', 'pepsi_cherry', 'pepsi_zerow'])
+#Args: Path and dataset register
+def main(args):
+    bottle_train, bottle_test = get_data_dict(args[1])
+    DatasetCatalog.register('%s_train' % (args[2]), lambda: bottle_train)
+    MetadataCatalog.get('%s_train' % (args[2])).set(thing_classes=['pepsi', 'mtn_dew', 'pepsi_cherry', 'pepsi_zerow'])
 
-DatasetCatalog.register('bottle_test', lambda: bottle_test)
-MetadataCatalog.get('bottle_test').set(thing_classes=['pepsi', 'mtn_dew', 'pepsi_cherry', 'pepsi_zerow'])
+    DatasetCatalog.register('%s_test' % (args[2]), lambda: bottle_test)
+    MetadataCatalog.get('%s_test' % (args[2])).set(thing_classes=['pepsi', 'mtn_dew', 'pepsi_cherry', 'pepsi_zerow'])
 
-bottle_metadata = MetadataCatalog.get("bottle_train")
+if __name__ == "__main__":
+    main(sys.argv)

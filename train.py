@@ -56,4 +56,4 @@ if __name__ == "__main__":
     main(sys.argv)
 
 
-train_model('faster_rcnn_R_50_C4_3x.yaml', '137849393/model_final_f97cb7.pkl', 'bottle')
+#train_model('faster_rcnn_R_50_C4_3x.yaml', '137849393/model_final_f97cb7.pkl', 'bottle')
