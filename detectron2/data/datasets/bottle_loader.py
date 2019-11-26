@@ -81,8 +81,17 @@ def category_switch(category):
         raise Exception('Unknown category in the dataset')
 
 
+def register_dataset(path, dataset):
+    bottle_train, bottle_test = get_data_dict(args[1])
+    DatasetCatalog.register('%s_train' % (args[2]), lambda: bottle_train)
+    MetadataCatalog.get('%s_train' % (args[2])).set(thing_classes=['pepsi', 'mtn_dew', 'pepsi_cherry', 'pepsi_zerow'])
+
+    DatasetCatalog.register('%s_test' % (args[2]), lambda: bottle_test)
+    MetadataCatalog.get('%s_test' % (args[2])).set(thing_classes=['pepsi', 'mtn_dew', 'pepsi_cherry', 'pepsi_zerow'])
+
 #Args: Path and dataset register
 def main(args):
+    print(args[2])
     bottle_train, bottle_test = get_data_dict(args[1])
     DatasetCatalog.register('%s_train' % (args[2]), lambda: bottle_train)
     MetadataCatalog.get('%s_train' % (args[2])).set(thing_classes=['pepsi', 'mtn_dew', 'pepsi_cherry', 'pepsi_zerow'])

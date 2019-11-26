@@ -5,6 +5,7 @@ from detectron2.evaluation import COCOEvaluator, inference_on_dataset
 from detectron2.data import build_detection_test_loader
 import os
 import sys
+from detectron2.data.datasets import bottle_loader
 
 
 def gen_cfg_train(model, weights, dataset):
@@ -30,7 +31,8 @@ def gen_cfg_test(dataset):
     cfg.DATASETS.TEST = (dataset, )
     return cfg
 
-def train_model(model, weights, dataset):
+def train_model(path, model, weights, dataset):
+    bottle_loader.register_dataset(path, dataset)
     cfg = gen_cfg_train(model, weights, dataset)
     os.makedirs(cfg.OUTPUT_DIR, exist_ok=True)
     trainer = DefaultTrainer(cfg) 
@@ -47,10 +49,11 @@ def test_model(dataset):
 
 def main(args):
     run = args[1]
+    path = args[2]
     if run == 'train':
-        train_model(args[2], args[3], args[4])
+        train_model(args[2], args[3], args[4], args[5])
     elif run == 'test':
-        test_model(args[2])
+        test_model(args[3])
 
 if __name__ == "__main__":
     main(sys.argv)
