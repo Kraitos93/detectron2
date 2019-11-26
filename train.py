@@ -39,7 +39,7 @@ def gen_cfg_train(model, weights, dataset):
 def gen_cfg_test(dataset):
     #cfg = gen_cfg_train(model, weights, dataset)
     cfg = get_cfg()
-    cfg.MODEL.WEIGHTS = os.path.join(cfg.OUTPUT_DIR, "model_final.pth")
+    cfg.MODEL.WEIGHTS = os.path.join("%s_%s" (cfg.OUTPUT_DIR, dataset), "model_final.pth")
     cfg.MODEL.ROI_HEADS.SCORE_THRESH_TEST = 0.7   # set the testing threshold for this model
     cfg.DATASETS.TEST = (dataset + '_test', )
     return cfg
@@ -56,7 +56,7 @@ def test_model(path, model, weights, dataset):
     bottle_loader.register_dataset(path, dataset)
     cfg_test = gen_cfg_test(dataset)
     cfg = gen_cfg_train(model, weights, dataset)
-    cfg.MODEL.WEIGHTS = os.path.join(cfg.OUTPUT_DIR, "model_final.pth")
+    #cfg.MODEL.WEIGHTS = os.path.join(cfg.OUTPUT_DIR, "model_final.pth")
     trainer = DefaultTrainer(cfg)
     trainer.resume_or_load(resume=False)
     evaluator = COCOEvaluator("%s_test" % (dataset), cfg_test, False, output_dir="./output_%s/" % (dataset))
