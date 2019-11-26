@@ -53,6 +53,7 @@ def train_model(path, model, weights, dataset):
     trainer.train()
 
 def test_model(model, weights, dataset):
+    bottle_loader.register_dataset(path, dataset)
     cfg_test = gen_cfg_test(dataset)
     cfg = gen_cfg_train(model, weights, dataset)
     trainer = DefaultTrainer(cfg)

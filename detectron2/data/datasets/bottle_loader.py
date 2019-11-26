@@ -7,10 +7,11 @@ import random
 from detectron2.data import DatasetCatalog, MetadataCatalog
 import sys
 
+
 def get_data_dict(dataset_dir):
     images = os.path.join(dataset_dir, 'images')
     images_list = os.listdir(images)
-    random.shuffle(images_list)
+    random.Random(485).shuffle(images_list)
 
     train = images_list[0:int(len(images_list)*0.80)]
     test = images_list[int(len(images_list)*0.80):int(len(images_list))]
