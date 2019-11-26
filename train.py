@@ -52,12 +52,13 @@ def train_model(path, model, weights, dataset):
     trainer.resume_or_load(resume=False)
     trainer.train()
 
-def test_model(dataset):
-    cfg = gen_cfg_test(dataset)
+def test_model(model, weights, dataset):
+    cfg_test = gen_cfg_test(dataset)
+    cfg = gen_cfg_train(model, weights, dataset)
     trainer = DefaultTrainer(cfg)
     trainer.resume_or_load(resume=False)
-    evaluator = COCOEvaluator(dataset, cfg, False, output_dir="./output_%s/" % (dataset))
-    val_loader = build_detection_test_loader(cfg, "%s_test" % (dataset))
+    evaluator = COCOEvaluator(dataset, cfg_test, False, output_dir="./output_%s/" % (dataset))
+    val_loader = build_detection_test_loader(cfg_test, "%s_test" % (dataset))
     inference_on_dataset(trainer.model, val_loader, evaluator)
 
 def main(args):
@@ -66,7 +67,7 @@ def main(args):
     if run == 'train':
         train_model(args[2], args[3], args[4], args[5])
     elif run == 'test':
-        test_model(args[3])
+        test_model(args[3], args[4], args[5])
 
 if __name__ == "__main__":
     main(sys.argv)
