@@ -6,6 +6,19 @@ from detectron2.data import build_detection_test_loader
 import os
 import sys
 from detectron2.data.datasets import bottle_loader
+import detectron2
+from detectron2.utils.logger import setup_logger
+setup_logger()
+
+# import some common libraries
+import numpy as np
+import random
+
+# import some common detectron2 utilities
+from detectron2.engine import DefaultPredictor
+from detectron2.config import get_cfg
+from detectron2.utils.visualizer import Visualizer
+from detectron2.data import MetadataCatalog
 
 
 def gen_cfg_train(model, weights, dataset):
@@ -18,7 +31,7 @@ def gen_cfg_train(model, weights, dataset):
     cfg.SOLVER.IMS_PER_BATCH = 2
     cfg.SOLVER.BASE_LR = 0.00025
     cfg.SOLVER.MAX_ITER = 1000    # 300 iterations seems good enough, but you can certainly train longer
-    cfg.MODEL.ROI_HEADS.BATCH_SIZE_PER_IMAGE = 32   # faster, and good enough for this toy dataset
+    cfg.MODEL.ROI_HEADS.BATCH_SIZE_PER_IMAGE = 128   # faster, and good enough for this toy dataset
     cfg.MODEL.ROI_HEADS.NUM_CLASSES = 4  # only has one class (ballon)
     cfg.OUTPUT_DIR = 'output_' + dataset
     return cfg
