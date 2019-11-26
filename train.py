@@ -30,7 +30,7 @@ def gen_cfg_train(model, weights, dataset):
     cfg.MODEL.WEIGHTS = "detectron2://COCO-Detection/" + os.path.splitext(model)[0] + '/' + weights  # initialize from model zoo
     cfg.SOLVER.IMS_PER_BATCH = 2
     cfg.SOLVER.BASE_LR = 0.00025
-    cfg.SOLVER.MAX_ITER = 1000    # 300 iterations seems good enough, but you can certainly train longer
+    cfg.SOLVER.MAX_ITER = 3000    # 300 iterations seems good enough, but you can certainly train longer
     cfg.MODEL.ROI_HEADS.BATCH_SIZE_PER_IMAGE = 128   # faster, and good enough for this toy dataset
     cfg.MODEL.ROI_HEADS.NUM_CLASSES = 4  # only has one class (ballon)
     cfg.OUTPUT_DIR = 'output_' + dataset
