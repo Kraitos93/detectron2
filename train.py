@@ -14,7 +14,7 @@ def gen_cfg_train(model, weights, dataset):
     cfg.DATASETS.TRAIN = (dataset + '_train',)
     cfg.DATASETS.TEST = ()
     cfg.DATALOADER.NUM_WORKERS = 2
-    cfg.MODEL.WEIGHTS = "detectron2://COCO-Detection/" + model + '/' + weights  # initialize from model zoo
+    cfg.MODEL.WEIGHTS = "detectron2://COCO-Detection/" + os.path.splitext(model)[0] + '/' + weights  # initialize from model zoo
     cfg.SOLVER.IMS_PER_BATCH = 2
     cfg.SOLVER.BASE_LR = 0.00025
     cfg.SOLVER.MAX_ITER = 1000    # 300 iterations seems good enough, but you can certainly train longer
