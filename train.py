@@ -79,6 +79,8 @@ def visualize_cfg(cfg):
 
 def visualize_images_dict(folder, dict_data, bottle_metadata, cfg):
     path = os.path.join(cfg.OUTPUT_DIR, folder)
+    if os.path.isdir(path):
+        os.removedirs(path)
     os.mkdir(path)
     dataset_dicts = dict_data
     predictor = visualize_cfg(cfg)
