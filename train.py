@@ -13,6 +13,7 @@ setup_logger()
 # import some common libraries
 import numpy as np
 import random
+import shutil
 
 # import some common detectron2 utilities
 from detectron2.engine import DefaultPredictor
@@ -72,15 +73,14 @@ def test_model(path, model, weights, dataset):
 
 def visualize_cfg(cfg):
     cfg.MODEL.WEIGHTS = os.path.join(cfg.OUTPUT_DIR, "model_final.pth")
-    cfg.MODEL.ROI_HEADS.SCORE_THRESH_TEST = 0.7   # set the testing threshold for this model
-    cfg.DATASETS.TEST = ("bottle_test", )
+    cfg.MODEL.ROI_HEADS.SCORE_THRESH_TEST = 0.5   # set the testing threshold for this model
     predictor = DefaultPredictor(cfg)
     return predictor
 
 def visualize_images_dict(folder, dict_data, bottle_metadata, cfg):
     path = os.path.join(cfg.OUTPUT_DIR, folder)
     if os.path.isdir(path):
-        os.removedirs(path)
+        shutil.rmtree(path)
     os.mkdir(path)
     dataset_dicts = dict_data
     predictor = visualize_cfg(cfg)
@@ -91,6 +91,7 @@ def visualize_images_dict(folder, dict_data, bottle_metadata, cfg):
                        metadata=bottle_metadata, 
                        scale=0.8   # remove the colors of unsegmented pixels
         )
+        print(outputs['instances'])
         v = v.draw_instance_predictions(outputs["instances"].to("cpu"))
         image = v.get_image()[:, :, ::-1]
         cv2.imwrite(os.path.join(path, os.path.basename(d['file_name'])), image)
