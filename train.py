@@ -19,6 +19,7 @@ from detectron2.engine import DefaultPredictor
 from detectron2.config import get_cfg
 from detectron2.utils.visualizer import Visualizer
 from detectron2.data import MetadataCatalog
+import cv2
 
 
 def gen_cfg_train(model, weights, dataset):
@@ -54,7 +55,7 @@ def train_model(path, model, weights, dataset):
 
 def test_model(path, model, weights, dataset):
     dataset_name = os.path.basename(path)
-    bottle_loader.register_dataset(path, dataset_name)
+    train, test = bottle_loader.register_dataset(path, dataset_name)
     bottle_loader.register_dataset(path, dataset)
     cfg_test = gen_cfg_test(dataset)
     cfg = gen_cfg_train(model, weights, dataset)
@@ -64,6 +65,35 @@ def test_model(path, model, weights, dataset):
     evaluator = COCOEvaluator("%s_test" % (dataset_name), cfg_test, False, output_dir="./output_%s/" % (dataset))
     val_loader = build_detection_test_loader(cfg_test, "%s_test" % (dataset))
     inference_on_dataset(trainer.model, val_loader, evaluator)
+
+    #Visualize the test
+    visualize_images_dict(dataset_name, test, MetadataCatalog.get('%s_test' % (dataset_name)), cfg_test)
+
+
+def visualize_cfg(cfg):
+    cfg.MODEL.WEIGHTS = os.path.join(cfg.OUTPUT_DIR, "model_final.pth")
+    cfg.MODEL.ROI_HEADS.SCORE_THRESH_TEST = 0.7   # set the testing threshold for this model
+    cfg.DATASETS.TEST = ("bottle_test", )
+    predictor = DefaultPredictor(cfg)
+    return predictor
+
+def visualize_images_dict(folder, dict_data, bottle_metadata, cfg):
+    path = os.path.join(cfg.OUTPUT_DIR, folder)
+    os.mkdir(path)
+    dataset_dicts = dict_data
+    predictor = visualize_cfg(cfg)
+    for d in dataset_dicts:    
+        im = cv2.imread(d["file_name"])
+        outputs = predictor(im)
+        v = Visualizer(im[:, :, ::-1],
+                       metadata=bottle_metadata, 
+                       scale=0.8   # remove the colors of unsegmented pixels
+        )
+        v = v.draw_instance_predictions(outputs["instances"].to("cpu"))
+        image = v.get_image()[:, :, ::-1]
+        cv2.imwrite(os.path.join(path, os.path.basename(d['file_name'])))
+
+
 
 def main(args):
     run = args[1]

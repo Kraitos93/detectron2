@@ -89,6 +89,7 @@ def register_dataset(path, dataset):
 
     DatasetCatalog.register('%s_test' % (dataset), lambda: bottle_test)
     MetadataCatalog.get('%s_test' % (dataset)).set(thing_classes=['pepsi', 'mtn_dew', 'pepsi_cherry', 'pepsi_zerow'])
+    return bottle_train, bottle_test
 
 #Args: Path and dataset register
 def main(args):
