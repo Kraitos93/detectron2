@@ -67,7 +67,7 @@ def test_model(path, model, weights, dataset):
     inference_on_dataset(trainer.model, val_loader, evaluator)
 
     #Visualize the test
-    visualize_images_dict(dataset_name, test, MetadataCatalog.get('%s_test' % (dataset_name)), cfg_test)
+    visualize_images_dict(dataset_name, test, MetadataCatalog.get('%s_test' % (dataset_name)), cfg)
 
 
 def visualize_cfg(cfg):
