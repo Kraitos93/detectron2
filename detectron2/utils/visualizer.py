@@ -197,6 +197,7 @@ def _create_text_labels(classes, scores, class_names):
         list[str] or None
     """
     labels = None
+    print(class_names)
     if classes is not None and class_names is not None and len(class_names) > 1:
         labels = [class_names[i] for i in classes]
     if scores is not None:
