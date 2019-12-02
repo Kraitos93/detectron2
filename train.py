@@ -58,7 +58,7 @@ def train_model(path, model, weights, dataset, action_type='train'):
 def test_model(path, model, weights, dataset, action_type='test'):
     dataset_name = os.path.basename(path)
     test = bottle_loader.register_dataset(path, dataset_name, action_type)
-    bottle_loader.register_dataset(path, dataset, action_type)
+    bottle_loader.register_dataset(path, dataset, 'train')
     cfg_test = gen_cfg_test(dataset)
     cfg = gen_cfg_train(model, weights, dataset)
     cfg.MODEL.WEIGHTS = os.path.join(cfg.OUTPUT_DIR, "model_final.pth")

@@ -24,9 +24,11 @@ def get_data_dict(dataset_dir):
     if len(os.listdir(dataset_dir + '/annotations/transformed')) > 0:
         annotation_folder = 'transformed'
     
+    counter = 1
     for img in train:
-        record = get_data_record(annotation_folder, dataset_dir, img)
+        record = get_data_record(annotation_folder, dataset_dir, img, counter)
         dataset_dicts_train.append(record)
+        counter = counter + 1
     #for img in test:
     #    record = get_data_record(annotation_folder, dataset_dir, img)
     #    dataset_dicts_val.append(record)
@@ -36,7 +38,7 @@ def get_data_dict(dataset_dir):
 
 
 
-def get_data_record(annotation_folder, dataset_dir, img):
+def get_data_record(annotation_folder, dataset_dir, img, counter):
     record = {}
     #Get the annotation file for the image
     image_name = os.path.splitext(img)[0]
@@ -64,7 +66,7 @@ def get_data_record(annotation_folder, dataset_dir, img):
         }
         objs.append(obj)
     record['file_name'] = filename
-    record['image_id'] = idx
+    record['image_id'] = counter
     record['height'] = int(height)
     record['width'] = int(width)
     record['annotations'] = objs
