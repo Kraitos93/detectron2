@@ -65,7 +65,7 @@ def test_model(path, model, weights, dataset, action_type='test'):
     trainer = DefaultTrainer(cfg)
     trainer.resume_or_load(resume=False)
     evaluator = COCOEvaluator("%s_%s" % (dataset_name, action_type), cfg_test, False, output_dir="./output_%s/" % (dataset))
-    val_loader = build_detection_test_loader(cfg_test, "%s_%s" % (dataset, action_type))
+    val_loader = build_detection_test_loader(cfg_test, "%s_%s" % (dataset, 'train'))
     inference_on_dataset(trainer.model, val_loader, evaluator)
 
     #Visualize the test
