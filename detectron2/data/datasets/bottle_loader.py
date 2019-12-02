@@ -13,11 +13,12 @@ def get_data_dict(dataset_dir):
     images_list = os.listdir(images)
     random.Random(485).shuffle(images_list)
 
-    train = images_list[0:int(len(images_list)*0.80)]
-    test = images_list[int(len(images_list)*0.80):int(len(images_list))]
+    train = images_list
+    #train = images_list[0:int(len(images_list)*0.80)]
+    #test = images_list[int(len(images_list)*0.80):int(len(images_list))]
 
     dataset_dicts_train = []
-    dataset_dicts_val = []
+    #dataset_dicts_val = []
 
     annotation_folder = 'original'
     if len(os.listdir(dataset_dir + '/annotations/transformed')) > 0:
@@ -26,11 +27,12 @@ def get_data_dict(dataset_dir):
     for img in train:
         record = get_data_record(annotation_folder, dataset_dir, img)
         dataset_dicts_train.append(record)
-    for img in test:
-        record = get_data_record(annotation_folder, dataset_dir, img)
-        dataset_dicts_val.append(record)
+    #for img in test:
+    #    record = get_data_record(annotation_folder, dataset_dir, img)
+    #    dataset_dicts_val.append(record)
 
-    return dataset_dicts_train, dataset_dicts_val
+    return dataset_dicts_train
+    #return dataset_dicts_train, dataset_dicts_val
 
 
 
@@ -82,23 +84,24 @@ def category_switch(category):
         raise Exception('Unknown category in the dataset')
 
 
-def register_dataset(path, dataset):
-    bottle_train, bottle_test = get_data_dict(path)
-    DatasetCatalog.register('%s_train' % (dataset), lambda: bottle_train)
-    MetadataCatalog.get('%s_train' % (dataset)).set(thing_classes=['pepsi', 'mtn_dew', 'pepsi_cherry', 'pepsi_zerow'])
+def register_dataset(path, dataset, action_type):
+    #bottle_train, bottle_test = get_data_dict(path)
+    bottle_train = get_data_dict(path)
+    DatasetCatalog.register('%s_%s' % (dataset, action_type), lambda: bottle_train)
+    MetadataCatalog.get('%s_%s' % (dataset, action_type)).set(thing_classes=['pepsi', 'mtn_dew', 'pepsi_cherry', 'pepsi_zerow'])
 
-    DatasetCatalog.register('%s_test' % (dataset), lambda: bottle_test)
-    MetadataCatalog.get('%s_test' % (dataset)).set(thing_classes=['pepsi', 'mtn_dew', 'pepsi_cherry', 'pepsi_zerow'])
-    return bottle_train, bottle_test
+    #DatasetCatalog.register('%s_test' % (dataset), lambda: bottle_test)
+    #MetadataCatalog.get('%s_test' % (dataset)).set(thing_classes=['pepsi', 'mtn_dew', 'pepsi_cherry', 'pepsi_zerow'])
+    return bottle_train
 
 #Args: Path and dataset register
 def main(args):
-    bottle_train, bottle_test = get_data_dict(args[1])
-    DatasetCatalog.register('%s_train' % (args[2]), lambda: bottle_train)
-    MetadataCatalog.get('%s_train' % (args[2])).set(thing_classes=['pepsi', 'mtn_dew', 'pepsi_cherry', 'pepsi_zerow'])
+    bottle_train = get_data_dict(args[1])
+    DatasetCatalog.register('%s_%s' % (args[2], args[3]), lambda: bottle_train)
+    MetadataCatalog.get('%s_%s' % (args[2], args[3])).set(thing_classes=['pepsi', 'mtn_dew', 'pepsi_cherry', 'pepsi_zerow'])
 
-    DatasetCatalog.register('%s_test' % (args[2]), lambda: bottle_test)
-    MetadataCatalog.get('%s_test' % (args[2])).set(thing_classes=['pepsi', 'mtn_dew', 'pepsi_cherry', 'pepsi_zerow'])
+    #DatasetCatalog.register('%s_test' % (args[2]), lambda: bottle_test)
+    #MetadataCatalog.get('%s_test' % (args[2])).set(thing_classes=['pepsi', 'mtn_dew', 'pepsi_cherry', 'pepsi_zerow'])
 
 if __name__ == "__main__":
     main(sys.argv)

@@ -46,29 +46,29 @@ def gen_cfg_test(dataset):
     cfg.DATASETS.TEST = (dataset + '_test', )
     return cfg
 
-def train_model(path, model, weights, dataset):
-    bottle_loader.register_dataset(path, dataset)
+def train_model(path, model, weights, dataset, action_type='train'):
+    bottle_loader.register_dataset(path, dataset, action_type)
     cfg = gen_cfg_train(model, weights, dataset)
     os.makedirs(cfg.OUTPUT_DIR, exist_ok=True)
     trainer = DefaultTrainer(cfg) 
     trainer.resume_or_load(resume=False)
     trainer.train()
 
-def test_model(path, model, weights, dataset):
+def test_model(path, model, weights, dataset, action_type='test'):
     dataset_name = os.path.basename(path)
-    train, test = bottle_loader.register_dataset(path, dataset_name)
-    bottle_loader.register_dataset(path, dataset)
+    test = bottle_loader.register_dataset(path, dataset_name, action_type)
+    bottle_loader.register_dataset(path, dataset, action_type)
     cfg_test = gen_cfg_test(dataset)
     cfg = gen_cfg_train(model, weights, dataset)
     cfg.MODEL.WEIGHTS = os.path.join(cfg.OUTPUT_DIR, "model_final.pth")
     trainer = DefaultTrainer(cfg)
     trainer.resume_or_load(resume=False)
-    evaluator = COCOEvaluator("%s_test" % (dataset_name), cfg_test, False, output_dir="./output_%s/" % (dataset))
-    val_loader = build_detection_test_loader(cfg_test, "%s_test" % (dataset))
+    evaluator = COCOEvaluator("%s_%s" % (dataset_name, action_type), cfg_test, False, output_dir="./output_%s/" % (dataset))
+    val_loader = build_detection_test_loader(cfg_test, "%s_%s" % (dataset, action_type))
     inference_on_dataset(trainer.model, val_loader, evaluator)
 
     #Visualize the test
-    visualize_images_dict(dataset_name, test, MetadataCatalog.get('%s_test' % (dataset_name)), cfg)
+    visualize_images_dict(dataset_name, test, MetadataCatalog.get('%s_%s' % (dataset_name, action_type)), cfg_test)
 
 
 def visualize_cfg(cfg):
