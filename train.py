@@ -92,7 +92,7 @@ def visualize_images_dict(folder, dict_data, bottle_metadata, cfg, dataset_name)
         outputs = predictor(im)
         v = Visualizer(im[:, :, ::-1],
                        metadata=bottle_metadata, 
-                       scale=1.2   # remove the colors of unsegmented pixels
+                       scale=1.0   # remove the colors of unsegmented pixels
         )
         print(outputs['instances'])
         v = v.draw_instance_predictions(outputs["instances"].to("cpu"))
