@@ -87,7 +87,7 @@ def visualize_images_dict(folder, dict_data, bottle_metadata, cfg, model):
         shutil.rmtree(path)
     os.mkdir(path)
     dataset_dicts = dict_data
-    predictor = visualize_cfg(cfg)
+    predictor = visualize_cfg(model)
     for d in dataset_dicts:    
         im = cv2.imread(d["file_name"])
         outputs = predictor(im)
