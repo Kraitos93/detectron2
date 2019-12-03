@@ -489,7 +489,7 @@ class Visualizer:
 
             boxes = [BoxMode.convert(x["bbox"], x["bbox_mode"], BoxMode.XYXY_ABS) for x in annos]
 
-            labels = [x["category_id"] for x in annos]
+            labels = ['GT' for x in annos]
             names = self.metadata.get("thing_classes", None)
             if names:
                 labels = [names[i] for i in labels]
