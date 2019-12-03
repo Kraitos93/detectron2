@@ -73,7 +73,7 @@ def test_model(path, model, weights, dataset, action_type='test'):
     visualize_images_dict(dataset_name, test, MetadataCatalog.get('%s_%s' % (dataset_name, action_type)), cfg_test, model)
 
 
-def visualize_cfg(model):
+def visualize_cfg(model, cfg):
     cfg = get_cfg()
     cfg.merge_from_file("./configs/COCO-Detection/" + model)
     cfg.MODEL.WEIGHTS = os.path.join(cfg.OUTPUT_DIR, "model_final.pth")
@@ -87,7 +87,7 @@ def visualize_images_dict(folder, dict_data, bottle_metadata, cfg, model):
         shutil.rmtree(path)
     os.mkdir(path)
     dataset_dicts = dict_data
-    predictor = visualize_cfg(model)
+    predictor = visualize_cfg(model, cfg)
     for d in dataset_dicts:    
         im = cv2.imread(d["file_name"])
         outputs = predictor(im)
