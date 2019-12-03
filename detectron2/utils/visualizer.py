@@ -491,7 +491,7 @@ class Visualizer:
             labels = [x["category_id"] for x in annos]
             names = self.metadata.get("thing_classes", None)
             if names:
-                labels = ['GT' for i in labels]
+                labels = [names[i] for i in labels]
             labels = [
                 "{}".format(i) + ("|crowd" if a.get("iscrowd", 0) else "")
                 for i, a in zip(labels, annos)
