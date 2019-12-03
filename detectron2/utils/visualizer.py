@@ -197,7 +197,6 @@ def _create_text_labels(classes, scores, class_names):
         list[str] or None
     """
     labels = None
-    print(class_names)
     if classes is not None and class_names is not None and len(class_names) > 1:
         labels = [class_names[i] for i in classes]
     if scores is not None:
@@ -489,10 +488,10 @@ class Visualizer:
 
             boxes = [BoxMode.convert(x["bbox"], x["bbox_mode"], BoxMode.XYXY_ABS) for x in annos]
 
-            labels = ['GT' for x in annos]
+            labels = [x["category_id"] for x in annos]
             names = self.metadata.get("thing_classes", None)
             if names:
-                labels = [names[i] for i in labels]
+                labels = ['GT' for i in labels]
             labels = [
                 "{}".format(i) + ("|crowd" if a.get("iscrowd", 0) else "")
                 for i, a in zip(labels, annos)
