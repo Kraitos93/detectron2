@@ -70,7 +70,7 @@ def test_model(path, model, weights, dataset, action_type='test'):
     inference_on_dataset(trainer.model, val_loader, evaluator)
 
     #Visualize the test
-    visualize_images_dict(dataset_name, test, MetadataCatalog.get('%s_%s' % (dataset_name, action_type)), cfg_test, model)
+    visualize_images_dict(dataset_name, test, MetadataCatalog.get('%s_%s' % (dataset_name, action_type)), cfg_test)
 
 
 def visualize_cfg(cfg):
@@ -79,13 +79,13 @@ def visualize_cfg(cfg):
     predictor = DefaultPredictor(cfg)
     return predictor
 
-def visualize_images_dict(folder, dict_data, bottle_metadata, cfg, model):
+def visualize_images_dict(folder, dict_data, bottle_metadata, cfg):
     path = os.path.join(cfg.OUTPUT_DIR, folder)
     if os.path.isdir(path):
         shutil.rmtree(path)
     os.mkdir(path)
     dataset_dicts = dict_data
-    predictor = visualize_cfg(model, cfg)
+    predictor = visualize_cfg(cfg)
     for d in dataset_dicts:    
         im = cv2.imread(d["file_name"])
         outputs = predictor(im)
