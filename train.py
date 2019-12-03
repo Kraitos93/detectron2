@@ -38,9 +38,10 @@ def gen_cfg_train(model, weights, dataset):
     cfg.OUTPUT_DIR = 'output_' + dataset
     return cfg
 
-def gen_cfg_test(dataset):
+def gen_cfg_test(dataset, model):
     #cfg = gen_cfg_train(model, weights, dataset)
     cfg = get_cfg()
+    cfg.merge_from_file("./configs/COCO-Detection/" + model)
     cfg.OUTPUT_DIR = 'output_' + dataset
     cfg.MODEL.WEIGHTS = os.path.join("%s_%s" % (cfg.OUTPUT_DIR, dataset), "model_final.pth")
     cfg.MODEL.ROI_HEADS.SCORE_THRESH_TEST = 0.7   # set the testing threshold for this model
@@ -59,7 +60,7 @@ def test_model(path, model, weights, dataset, action_type='test'):
     dataset_name = os.path.basename(path)
     test = bottle_loader.register_dataset(path, dataset_name, action_type)
     bottle_loader.register_dataset(path, dataset, 'train')
-    cfg_test = gen_cfg_test(dataset)
+    cfg_test = gen_cfg_test(dataset, model)
     cfg = gen_cfg_train(model, weights, dataset)
     cfg.MODEL.WEIGHTS = os.path.join(cfg.OUTPUT_DIR, "model_final.pth")
     trainer = DefaultTrainer(cfg)
@@ -74,7 +75,7 @@ def test_model(path, model, weights, dataset, action_type='test'):
 
 def visualize_cfg(cfg):
     cfg.MODEL.WEIGHTS = os.path.join(cfg.OUTPUT_DIR, "model_final.pth")
-    cfg.MODEL.ROI_HEADS.SCORE_THRESH_TEST = 0.1   # set the testing threshold for this model
+    cfg.MODEL.ROI_HEADS.SCORE_THRESH_TEST = 0.5   # set the testing threshold for this model
     predictor = DefaultPredictor(cfg)
     return predictor
 
@@ -92,7 +93,7 @@ def visualize_images_dict(folder, dict_data, bottle_metadata, cfg):
                        metadata=bottle_metadata, 
                        scale=0.8   # remove the colors of unsegmented pixels
         )
-        print(outputs['instances'].pred_boxes)
+        print(outputs['instances'])
         v = v.draw_instance_predictions(outputs["instances"].to("cpu"))
         image = v.get_image()[:, :, ::-1]
         cv2.imwrite(os.path.join(path, os.path.basename(d['file_name'])), image)
