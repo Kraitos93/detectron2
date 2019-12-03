@@ -98,7 +98,7 @@ def visualize_images_dict(folder, dict_data, bottle_metadata, cfg):
         v = Visualizer(image[:,:, ::-1],
                         metadata=bottle_metadata,
                         scale=1.0)
-        v = v.draw_dataset_dict(dict_data)
+        v = v.draw_dataset_dict(d)
         image = v.get_image()[:, :, ::-1]
 
         #Draw the ground truth as well:
