@@ -74,7 +74,7 @@ def test_model(path, model, weights, dataset, action_type='test'):
 
 def visualize_cfg(cfg):
     cfg.MODEL.WEIGHTS = os.path.join(cfg.OUTPUT_DIR, "model_final.pth")
-    cfg.MODEL.ROI_HEADS.SCORE_THRESH_TEST = 0.5   # set the testing threshold for this model
+    cfg.MODEL.ROI_HEADS.SCORE_THRESH_TEST = 0.1   # set the testing threshold for this model
     predictor = DefaultPredictor(cfg)
     return predictor
 
@@ -85,14 +85,14 @@ def visualize_images_dict(folder, dict_data, bottle_metadata, cfg):
     os.mkdir(path)
     dataset_dicts = dict_data
     predictor = visualize_cfg(cfg)
-    for d in dataset_dicts:
+    for d in dataset_dicts:    
         im = cv2.imread(d["file_name"])
         outputs = predictor(im)
         v = Visualizer(im[:, :, ::-1],
                        metadata=bottle_metadata, 
                        scale=0.8   # remove the colors of unsegmented pixels
         )
-        print(outputs['instances'])
+        print(outputs['instances'].pred_boxes)
         v = v.draw_instance_predictions(outputs["instances"].to("cpu"))
         image = v.get_image()[:, :, ::-1]
         cv2.imwrite(os.path.join(path, os.path.basename(d['file_name'])), image)
