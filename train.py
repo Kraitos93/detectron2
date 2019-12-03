@@ -41,7 +41,7 @@ def gen_cfg_train(model, weights, dataset):
 def gen_cfg_test(dataset, model):
     #cfg = gen_cfg_train(model, weights, dataset)
     cfg = get_cfg()
-    cfg.merge_from_file("./configs/COCO-Detection/" + model)
+    #cfg.merge_from_file("./configs/COCO-Detection/" + model)
     cfg.OUTPUT_DIR = 'output_' + dataset
     cfg.MODEL.WEIGHTS = os.path.join("%s_%s" % (cfg.OUTPUT_DIR, dataset), "model_final.pth")
     cfg.MODEL.ROI_HEADS.SCORE_THRESH_TEST = 0.7   # set the testing threshold for this model
@@ -74,8 +74,8 @@ def test_model(path, model, weights, dataset, action_type='test'):
 
 
 def visualize_cfg(cfg):
-    cfg.MODEL.WEIGHTS = os.path.join(cfg.OUTPUT_DIR, "model_final.pth")
-    cfg.MODEL.ROI_HEADS.SCORE_THRESH_TEST = 0.5   # set the testing threshold for this model
+    #cfg.MODEL.WEIGHTS = os.path.join(cfg.OUTPUT_DIR, "model_final.pth")
+    #cfg.MODEL.ROI_HEADS.SCORE_THRESH_TEST = 0.7   # set the testing threshold for this model
     predictor = DefaultPredictor(cfg)
     return predictor
 
