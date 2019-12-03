@@ -94,8 +94,8 @@ def visualize_images_dict(folder, dict_data, bottle_metadata, cfg):
         )
         v = v.draw_instance_predictions(outputs["instances"].to("cpu"))
         image = v.get_image()[:, :, ::-1]
-        
-        v = Visualizer(image[:,:, ::-1],
+        cv2.imwrite(os.path.join(path, 'instance_' + os.path.basename(d['file_name'])), image)
+        v = Visualizer(image,
                         metadata=bottle_metadata,
                         scale=1.0)
         v = v.draw_dataset_dict(d)
