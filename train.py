@@ -38,14 +38,14 @@ def gen_cfg_train(model, weights, dataset):
     cfg.OUTPUT_DIR = 'output_' + dataset
     return cfg
 
-def gen_cfg_test(dataset, model):
+def gen_cfg_test(dataset, model, dataset_name):
     #cfg = gen_cfg_train(model, weights, dataset)
     cfg = get_cfg()
     #cfg.merge_from_file("./configs/COCO-Detection/" + model)
     cfg.OUTPUT_DIR = 'output_' + dataset
     cfg.MODEL.WEIGHTS = os.path.join(cfg.OUTPUT_DIR, "model_final.pth")
     cfg.MODEL.ROI_HEADS.SCORE_THRESH_TEST = 0.7   # set the testing threshold for this model
-    cfg.DATASETS.TEST = (dataset + '_test', )
+    cfg.DATASETS.TEST = (dataset_name + '_test', )
     return cfg
 
 def train_model(path, model, weights, dataset, action_type='train'):
@@ -60,7 +60,7 @@ def test_model(path, model, weights, dataset, action_type='test'):
     dataset_name = os.path.basename(path)
     test = bottle_loader.register_dataset(path, dataset_name, action_type)
     bottle_loader.register_dataset(path, dataset, 'train')
-    cfg_test = gen_cfg_test(dataset, model)
+    cfg_test = gen_cfg_test(dataset, model, dataset_name)
     cfg = gen_cfg_train(model, weights, dataset)
     cfg.MODEL.WEIGHTS = os.path.join(cfg.OUTPUT_DIR, "model_final.pth")
     trainer = DefaultTrainer(cfg)
@@ -70,28 +70,29 @@ def test_model(path, model, weights, dataset, action_type='test'):
     inference_on_dataset(trainer.model, val_loader, evaluator)
 
     #Visualize the test
-    visualize_images_dict(dataset_name, test, MetadataCatalog.get('%s_%s' % (dataset_name, 'train')), cfg_test)
+    visualize_images_dict(dataset_name, test, MetadataCatalog.get('%s_%s' % (dataset, 'train')), cfg, dataset_name)
 
 
-def visualize_cfg(cfg):
+def visualize_cfg(cfg, dataset):
+    cfg.DATASETS.TEST = (dataset + '_test', )
     cfg.MODEL.WEIGHTS = os.path.join(cfg.OUTPUT_DIR, "model_final.pth")
     cfg.MODEL.ROI_HEADS.SCORE_THRESH_TEST = 0.7   # set the testing threshold for this model
     predictor = DefaultPredictor(cfg)
     return predictor
 
-def visualize_images_dict(folder, dict_data, bottle_metadata, cfg):
+def visualize_images_dict(folder, dict_data, bottle_metadata, cfg, dataset_name):
     path = os.path.join(cfg.OUTPUT_DIR, folder)
     if os.path.isdir(path):
         shutil.rmtree(path)
     os.mkdir(path)
     dataset_dicts = dict_data
-    predictor = visualize_cfg(cfg)
+    predictor = visualize_cfg(cfg, dataset_name)
     for d in dataset_dicts:    
         im = cv2.imread(d["file_name"])
         outputs = predictor(im)
         v = Visualizer(im[:, :, ::-1],
                        metadata=bottle_metadata, 
-                       scale=0.8   # remove the colors of unsegmented pixels
+                       scale=1.2   # remove the colors of unsegmented pixels
         )
         print(outputs['instances'])
         v = v.draw_instance_predictions(outputs["instances"].to("cpu"))
