@@ -73,12 +73,10 @@ def test_model(path, model, weights, dataset, action_type='test'):
     visualize_images_dict(dataset_name, test, MetadataCatalog.get('%s_%s' % (dataset_name, action_type)), cfg_test, model)
 
 
-def visualize_cfg(model, cfg):
-    cfg_vis = get_cfg()
-    cfg_vis.merge_from_file("./configs/COCO-Detection/" + model)
-    cfg_vis.MODEL.WEIGHTS = os.path.join(cfg.OUTPUT_DIR, "model_final.pth")
-    cfg_vis.MODEL.ROI_HEADS.SCORE_THRESH_TEST = 0.5   # set the testing threshold for this model
-    predictor = DefaultPredictor(cfg_vis)
+def visualize_cfg(cfg):
+    cfg.MODEL.WEIGHTS = os.path.join(cfg.OUTPUT_DIR, "model_final.pth")
+    cfg.MODEL.ROI_HEADS.SCORE_THRESH_TEST = 0.7   # set the testing threshold for this model
+    predictor = DefaultPredictor(cfg)
     return predictor
 
 def visualize_images_dict(folder, dict_data, bottle_metadata, cfg, model):
