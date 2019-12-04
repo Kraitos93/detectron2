@@ -99,7 +99,7 @@ def visualize_images_dict(folder, dict_data, bottle_metadata, cfg, dataset_name)
         image = v.get_image()[:, :, ::-1]
         v_gt = Visualizer(image[:,:,::-1], 
                           metadata=bottle_metadata,
-                          scale=1.0)
+                          scale=1.5)
         v_gt = v_gt.draw_dataset_dict(d)
         image = v_gt.get_image()[:,:,::-1]
         cv2.imwrite(os.path.join(path, os.path.basename(d['file_name'])), image)
