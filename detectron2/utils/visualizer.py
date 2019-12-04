@@ -354,7 +354,8 @@ class Visualizer:
                 (predictions.pred_masks.any(dim=0) > 0).numpy()
             )
             alpha = 0.3
-
+        else:
+            alpha = 0.8
         self.overlay_instances(
             masks=masks,
             boxes=boxes,
@@ -481,7 +482,7 @@ class Visualizer:
             labels = [x["category_id"] for x in annos]
             names = self.metadata.get("thing_classes", None)
             if names:
-                labels = [names[i] for i in labels]
+                labels = ["GT" for i in labels]
             labels = [
                 "{}".format(i) + ("|crowd" if a.get("iscrowd", 0) else "")
                 for i, a in zip(labels, annos)
@@ -503,7 +504,7 @@ class Visualizer:
         masks=None,
         keypoints=None,
         assigned_colors=None,
-        alpha=0.5
+        alpha=0.8
     ):
         """
         Args:
