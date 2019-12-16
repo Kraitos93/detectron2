@@ -94,7 +94,6 @@ def visualize_images_dict(folder, dict_data, bottle_metadata, cfg, dataset_name)
                        metadata=bottle_metadata, 
                        scale=1.0   # remove the colors of unsegmented pixels
         )
-        print(outputs['instances'])
         v = v.draw_instance_predictions(outputs["instances"].to("cpu"))
         image = v.get_image()[:, :, ::-1]
         v_gt = Visualizer(image[:,:,::-1], 
@@ -107,6 +106,7 @@ def visualize_images_dict(folder, dict_data, bottle_metadata, cfg, dataset_name)
         v_gt = Visualizer(im[:,:,::-1], 
                           metadata=bottle_metadata,
                           scale=1.5)
+        v_gt = v_gt.draw_dataset_dict(d)
         image = v_gt.get_image()[:,:,::-1]
         cv2.imwrite(os.path.join(path, 'gt_' + os.path.basename(d['file_name'])), image)
 
