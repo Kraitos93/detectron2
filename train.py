@@ -46,6 +46,7 @@ def gen_cfg_test(dataset, model, dataset_name):
     cfg.MODEL.WEIGHTS = os.path.join(cfg.OUTPUT_DIR, "model_final.pth")
     cfg.MODEL.ROI_HEADS.SCORE_THRESH_TEST = 0.7   # set the testing threshold for this model
     cfg.DATASETS.TEST = (dataset_name + '_test', )
+    cfg.TEST.DETECTIONS_PER_IMAGE = 1
     return cfg
 
 def train_model(path, model, weights, dataset, action_type='train'):
