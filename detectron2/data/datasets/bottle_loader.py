@@ -86,15 +86,26 @@ def category_switch(category):
         raise Exception('Unknown category in the dataset')
 
 
-def register_dataset(path, dataset, action_type):
+def register_dataset(path, dataset, action_type, mode):
     #bottle_train, bottle_test = get_data_dict(path)
     bottle_train = get_data_dict(path)
     DatasetCatalog.register('%s_%s' % (dataset, action_type), lambda: bottle_train)
-    MetadataCatalog.get('%s_%s' % (dataset, action_type)).set(thing_classes=['pepsi', 'mtn_dew', 'pepsi_cherry', 'pepsi_zerow'])
+    MetadataCatalog.get('%s_%s' % (dataset, action_type)).set(thing_classes=mode_classes(mode))
 
     #DatasetCatalog.register('%s_test' % (dataset), lambda: bottle_test)
     #MetadataCatalog.get('%s_test' % (dataset)).set(thing_classes=['pepsi', 'mtn_dew', 'pepsi_cherry', 'pepsi_zerow'])
     return bottle_train
+
+def mode_classes(mode):
+    if mode == "full":
+        return ['pepsi', 'mtn_dew', 'pepsi_cherry', 'pepsi_zerow']
+    elif mode == "no_pepsi":
+        return ['mtn_dew', 'pepsi_cherry', 'pepsi_zerow']
+    elif mode == "no_cherry":
+        return ['pepsi', 'mtn_dew', 'pepsi_zerow']
+    else:
+        raise Exception("Unknown mode used")
+
 
 #Args: Path and dataset register
 def main(args):

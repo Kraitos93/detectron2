@@ -49,18 +49,18 @@ def gen_cfg_test(dataset, model, dataset_name):
     cfg.TEST.DETECTIONS_PER_IMAGE = 1
     return cfg
 
-def train_model(path, model, weights, dataset, action_type='train'):
-    bottle_loader.register_dataset(path, dataset, action_type)
+def train_model(path, model, weights, dataset, action_type='train', mode="full"):
+    bottle_loader.register_dataset(path, dataset, action_type, mode)
     cfg = gen_cfg_train(model, weights, dataset)
     os.makedirs(cfg.OUTPUT_DIR, exist_ok=True)
     trainer = DefaultTrainer(cfg) 
     trainer.resume_or_load(resume=False)
     trainer.train()
 
-def test_model(path, model, weights, dataset, action_type='test'):
+def test_model(path, model, weights, dataset, action_type='test', mode="full"):
     dataset_name = os.path.basename(path)
-    test = bottle_loader.register_dataset(path, dataset_name, action_type)
-    bottle_loader.register_dataset(path, dataset, 'train')
+    test = bottle_loader.register_dataset(path, dataset_name, action_type, mode)
+    bottle_loader.register_dataset(path, dataset, 'train', mode)
     cfg_test = gen_cfg_test(dataset, model, dataset_name)
     cfg = gen_cfg_train(model, weights, dataset)
     cfg.MODEL.WEIGHTS = os.path.join(cfg.OUTPUT_DIR, "model_final.pth")
@@ -144,9 +144,9 @@ def main(args):
     run = args[1]
     path = args[2]
     if run == 'train':
-        train_model(args[2], args[3], args[4], args[5])
+        train_model(args[2], args[3], args[4], args[5], mode=args[6])
     elif run == 'test':
-        test_model(args[2], args[3], args[4], args[5])
+        test_model(args[2], args[3], args[4], args[5], mode=args[6])
 
 if __name__ == "__main__":
     main(sys.argv)
