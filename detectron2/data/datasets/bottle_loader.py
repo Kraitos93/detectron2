@@ -8,7 +8,7 @@ from detectron2.data import DatasetCatalog, MetadataCatalog
 import sys
 
 
-def get_data_dict(dataset_dir):
+def get_data_dict(dataset_dir, mode):
     images = os.path.join(dataset_dir, 'images')
     images_list = os.listdir(images)
     random.Random(485).shuffle(images_list)
@@ -26,7 +26,7 @@ def get_data_dict(dataset_dir):
     
     counter = 1
     for img in train:
-        record = get_data_record(annotation_folder, dataset_dir, img, counter)
+        record = get_data_record(annotation_folder, dataset_dir, img, counter, mode)
         dataset_dicts_train.append(record)
         counter = counter + 1
     #for img in test:
@@ -38,7 +38,7 @@ def get_data_dict(dataset_dir):
 
 
 
-def get_data_record(annotation_folder, dataset_dir, img, counter):
+def get_data_record(annotation_folder, dataset_dir, img, counter, mode):
     record = {}
     #Get the annotation file for the image
     image_name = os.path.splitext(img)[0]
@@ -95,7 +95,7 @@ def category_switch(category, mode):
 
 def register_dataset(path, dataset, action_type, mode):
     #bottle_train, bottle_test = get_data_dict(path)
-    bottle_train = get_data_dict(path)
+    bottle_train = get_data_dict(path, mode)
     DatasetCatalog.register('%s_%s' % (dataset, action_type), lambda: bottle_train)
     MetadataCatalog.get('%s_%s' % (dataset, action_type)).set(thing_classes=mode_classes(mode))
 
@@ -116,7 +116,7 @@ def mode_classes(mode):
 
 #Args: Path and dataset register
 def main(args):
-    bottle_train = get_data_dict(args[1])
+    bottle_train = get_data_dict(args[1], "full")
     DatasetCatalog.register('%s_%s' % (args[2], args[3]), lambda: bottle_train)
     MetadataCatalog.get('%s_%s' % (args[2], args[3])).set(thing_classes=['pepsi', 'mtn_dew', 'pepsi_cherry', 'pepsi_zerow'])
 
