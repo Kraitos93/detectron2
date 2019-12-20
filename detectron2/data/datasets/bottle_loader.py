@@ -58,7 +58,7 @@ def get_data_record(annotation_folder, dataset_dir, img, counter):
         x_bootom = bbox['x_bottom']
         y_top = bbox['y_top']
         y_bottom = bbox['y_bottom']
-        category_id = category_switch(category_name)
+        category_id = category_switch(category_name, mode)
         obj = {
             'bbox': [int(x_top), int(y_top), int(x_bootom), int(y_bottom)],
             'bbox_mode': BoxMode.XYXY_ABS,
@@ -72,18 +72,25 @@ def get_data_record(annotation_folder, dataset_dir, img, counter):
     record['annotations'] = objs
     return record
 
-def category_switch(category):
-    if category == 'pepsi':
-        return 0
-    elif category == 'mtn_dew':
-        return 1
-    elif category == 'pepsi_cherry':
-        return 2
-    elif category == 'pepsi_zerow':
-         #TODO: This category is not correct, I think it is zerot or something like that
-        return 3
-    else:
-        raise Exception('Unknown category in the dataset')
+def category_switch(category, mode):
+    classes = mode_classes(mode)
+    count = 0
+    for i in classes:
+        if category == i:
+            return count
+        count = count + 1
+    raise Exception("Unknown category")
+    #if category == 'pepsi':
+    #    return 0
+    #elif category == 'mtn_dew':
+    #    return 1
+    #elif category == 'pepsi_cherry':
+    #    return 2
+    #elif category == 'pepsi_zerow':
+    #     #TODO: This category is not correct, I think it is zerot or something like that
+    #    return 3
+    #else:
+    #    raise Exception('Unknown category in the dataset')
 
 
 def register_dataset(path, dataset, action_type, mode):
