@@ -8,6 +8,7 @@ import sys
 from detectron2.data.datasets import bottle_loader
 import detectron2
 from detectron2.utils.logger import setup_logger
+import csv
 setup_logger()
 
 # import some common libraries
@@ -57,7 +58,7 @@ def train_model(path, model, weights, dataset, action_type='train', mode="full")
     trainer.resume_or_load(resume=False)
     trainer.train()
 
-def test_model(path, model, weights, dataset, action_type='test', mode="full"):
+def test_model(path, model, weights, dataset, action_type='test', mode="full", visualize=False):
     dataset_name = os.path.basename(path)
     test = bottle_loader.register_dataset(path, dataset_name, action_type, mode)
     bottle_loader.register_dataset(path, dataset, 'train', mode)
@@ -71,7 +72,8 @@ def test_model(path, model, weights, dataset, action_type='test', mode="full"):
     result = inference_on_dataset(trainer.model, val_loader, evaluator)
 
     #Visualize the test
-    visualize_images_dict(dataset_name, test, MetadataCatalog.get('%s_%s' % (dataset, 'train')), cfg, dataset_name)
+    if visualize:
+        visualize_images_dict(dataset_name, test, MetadataCatalog.get('%s_%s' % (dataset, 'train')), cfg, dataset_name)
     return result
 
 
@@ -151,7 +153,12 @@ def main(args):
         result = test_model(args[2], args[3], args[4], args[5], mode=args[6])
         if csv_file is not None:
             #TODO: Print to row of csv
-            print(result)
+            AP50 = result['AP50']
+            AP75 = result['AP75']
+            AP = result['AP']
+            with open(os.path.join(os.getcwd(), csv_file), 'a', newline='') as file:
+                writer = csv.writer(file)
+                writer.writerows([AP50, AP75, AP])
 if __name__ == "__main__":
     main(sys.argv)
 
