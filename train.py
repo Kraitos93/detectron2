@@ -153,12 +153,14 @@ def main(args):
         result = test_model(args[2], args[3], args[4], args[5], mode=args[6])
         if csv_file is not None:
             #TODO: Print to row of csv
-            AP50 = result['AP50']
-            AP75 = result['AP75']
-            AP = result['AP']
+            values = result['bbox']
+            AP50 = values['AP50']
+            AP75 = values['AP75']
+            AP = values['AP']
+            print([AP50, AP75, AP])
             with open(os.path.join(os.getcwd(), csv_file), 'a', newline='') as file:
                 writer = csv.writer(file)
-                writer.writerows([AP50, AP75, AP])
+                writer.writerows([[AP50, AP75, AP]])
 if __name__ == "__main__":
     main(sys.argv)
 
