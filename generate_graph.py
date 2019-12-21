@@ -2,6 +2,7 @@ import pandas as pd
 import plotly.express as px
 import sys
 import os
+import matplotlib.pyplot as plt
 
 
 def transform_model(model):
@@ -26,6 +27,14 @@ if __name__ == "__main__":
     args = sys.argv
     model = args[1]
     df = pd.read_csv(os.path.join(os.getcwd(), 'csv_files', model + '.csv'))
-    df_long=pd.melt(df, id_vars=['Epoch'], value_vars=['AP50', 'AP75', 'mAP'])
-    fig = px.line(df_long, x='Epoch', y = 'value', title='Model quality (%s)' % (transform_model(model)))
-    fig.write_image(os.path.join(os.getcwd(), 'csv_files', 'images', model + '.png'))
+
+    ax = plt.gca()
+    df.plot(kind='line',x='Epoch',y='AP50',ax=ax)
+    df.plot(kind='line',x='Epoch',y='AP75', color='red', ax=ax)
+    df.plot(kind='line',x='Epoch',y='mAP', color='green', ax=ax)
+
+    plt.savefig(os.path.join(os.getcwd(), 'csv_files', 'images', model + '.png'))
+
+    #df_long=pd.melt(df, id_vars=['Epoch'], value_vars=['AP50', 'AP75', 'mAP'])
+    #fig = px.line(df_long, x='Epoch', y = 'value', title='Model quality (%s)' % (transform_model(model)))
+    #fig.write_image(os.path.join(os.getcwd(), 'csv_files', 'images', model + '.png'))
