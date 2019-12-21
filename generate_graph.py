@@ -26,6 +26,6 @@ if __name__ == "__main__":
     args = sys.argv
     model = args[1]
     df = pd.read_csv(os.path.join(os.getcwd(), 'csv_files', model + '.csv'))
-    df_long=pd.melt(df, id_vars=['Epoch'] value_vars=['AP50', 'AP75', 'mAP'])
+    df_long=pd.melt(df, id_vars=['Epoch'], value_vars=['AP50', 'AP75', 'mAP'])
     fig = px.line(df, x='Epoch', y = 'Percentage', title='Model quality (%s)' % (transform_model(model)))
     fig.write_image(os.path.join(os.getcwd(), 'csv_files', 'images', model + '.png'))
