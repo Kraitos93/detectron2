@@ -29,6 +29,7 @@ if __name__ == "__main__":
     df = pd.read_csv(os.path.join(os.getcwd(), 'csv_files', model + '.csv'))
 
     ax = plt.gca()
+    plt.ylim(0, 100)
     df.plot(kind='line',x='Epoch',y='AP50',ax=ax)
     df.plot(kind='line',x='Epoch',y='AP75', color='red', ax=ax)
     df.plot(kind='line',x='Epoch',y='mAP', color='green', ax=ax)
