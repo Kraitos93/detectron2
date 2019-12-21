@@ -68,10 +68,11 @@ def test_model(path, model, weights, dataset, action_type='test', mode="full"):
     trainer.resume_or_load(resume=False)
     evaluator = COCOEvaluator("%s_%s" % (dataset_name, action_type), cfg_test, False, output_dir="./output_%s/" % (dataset))
     val_loader = build_detection_test_loader(cfg_test, "%s_%s" % (dataset, 'train'))
-    inference_on_dataset(trainer.model, val_loader, evaluator)
+    result = inference_on_dataset(trainer.model, val_loader, evaluator)
 
     #Visualize the test
     visualize_images_dict(dataset_name, test, MetadataCatalog.get('%s_%s' % (dataset, 'train')), cfg, dataset_name)
+    return result
 
 
 def visualize_cfg(cfg, dataset):
@@ -146,8 +147,11 @@ def main(args):
     if run == 'train':
         train_model(args[2], args[3], args[4], args[5], mode=args[6])
     elif run == 'test':
-        test_model(args[2], args[3], args[4], args[5], mode=args[6])
-
+        csv_file = args[7]
+        result = test_model(args[2], args[3], args[4], args[5], mode=args[6])
+        if csv_file is not None:
+            #TODO: Print to row of csv
+            print(result)
 if __name__ == "__main__":
     main(sys.argv)
 
