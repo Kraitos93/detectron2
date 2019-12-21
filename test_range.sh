@@ -11,7 +11,7 @@ if [ -z "$MODE" ]
 then
     MODE_FORMAT=${MODE}_${MODE_FORMAT}
 fi
-python3 train.py test ./datasets/${MODEL}_${i}_test faster_rcnn_R_50_C4_3x.yaml 137849393/model_final_f97cb7.pkl ${MODE_FORMAT} ${MODE} ${i}; 
+python3 train.py test ./datasets/${MODEL}_${i}_test faster_rcnn_R_50_C4_3x.yaml 137849393/model_final_f97cb7.pkl ${MODE_FORMAT} ${MODE} csv_files/${MODEL}.csv ${i}; 
 done
 #Generate the graphs
 python3 generate_graph.py ${MODEL}
