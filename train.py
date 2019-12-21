@@ -150,6 +150,9 @@ def main(args):
         train_model(args[2], args[3], args[4], args[5], mode=args[6])
     elif run == 'test':
         csv_file = args[7]
+        epoch = 0
+        if len(args) > 8:
+            epoch = args[8]
         result = test_model(args[2], args[3], args[4], args[5], mode=args[6])
         if csv_file is not None:
             #TODO: Print to row of csv
@@ -160,7 +163,7 @@ def main(args):
             print([AP50, AP75, AP])
             with open(os.path.join(os.getcwd(), csv_file), 'a', newline='') as file:
                 writer = csv.writer(file)
-                writer.writerows([[AP50, AP75, AP]])
+                writer.writerows([[epoch, AP50, AP75, AP]])
 if __name__ == "__main__":
     main(sys.argv)
 
