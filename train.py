@@ -45,7 +45,7 @@ def gen_cfg_test(dataset, model, dataset_name):
     #cfg.merge_from_file("./configs/COCO-Detection/" + model)
     cfg.OUTPUT_DIR = 'output_' + dataset
     cfg.MODEL.WEIGHTS = os.path.join(cfg.OUTPUT_DIR, "model_final.pth")
-    cfg.MODEL.ROI_HEADS.SCORE_THRESH_TEST = 0.7   # set the testing threshold for this model
+    cfg.MODEL.ROI_HEADS.SCORE_THRESH_TEST = 0.9   # set the testing threshold for this model
     cfg.DATASETS.TEST = (dataset_name + '_test', )
     cfg.TEST.DETECTIONS_PER_IMAGE = 1
     return cfg
