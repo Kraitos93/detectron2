@@ -65,6 +65,7 @@ def test_model(path, model, weights, dataset, action_type='test', mode="full", v
     cfg_test = gen_cfg_test(dataset, model, dataset_name)
     cfg = gen_cfg_train(model, weights, dataset)
     cfg.MODEL.WEIGHTS = os.path.join(cfg.OUTPUT_DIR, "model_final.pth")
+    cfg.MODEL.ROI_HEADS.SCORE_THRESH_TEST = 0.9
     trainer = DefaultTrainer(cfg)
     trainer.resume_or_load(resume=False)
     evaluator = COCOEvaluator("%s_%s" % (dataset_name, action_type), cfg_test, False, output_dir="./output_%s/" % (dataset))
