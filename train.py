@@ -150,7 +150,9 @@ def main(args):
     if run == 'train':
         train_model(args[2], args[3], args[4], args[5], mode=args[6])
     elif run == 'test':
-        csv_file = args[7]
+        csv_file = None
+        if len(args) > 7:
+            csv_file = args[7]
         epoch = 0
         if len(args) > 8:
             epoch = args[8]
